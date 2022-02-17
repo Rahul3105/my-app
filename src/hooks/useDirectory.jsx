@@ -35,6 +35,14 @@ const useDirectory = (dir_id = null) => {
       console.log(err.message);
     }
   };
-  return { state, addSubDirectory, setDirID };
+  const addFile = async (form) => {
+    try {
+      let res = await axios.post('http://localhost:1234/my-directory/file', form);
+      setState(res.data)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+  return { state, addSubDirectory, setDirID ,addFile};
 };
 export { useDirectory };
