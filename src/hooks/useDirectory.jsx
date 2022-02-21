@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-const api_url = "http://35.170.203.74/api"
+const api_url = "https://salty-sands-70108.herokuapp.com/api"
 const useDirectory = (dir_id = null) => {
   const [dirID, setDirID] = useState(null);
   const [state, setState] = useState();

@@ -14,7 +14,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import { useHistory, useParams } from 'react-router-dom';
 import { useDirectory } from '../hooks/useDirectory';
 import PasteItemBtn from './PasteItemBtn';
-const api_url = "http://35.170.203.74/api"
+const api_url = "https://salty-sands-70108.herokuapp.com/api"
 
 const Home = () => {
   const { id } = useParams()
