@@ -6,8 +6,13 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-
-export default function Navbar({user_name}) {
+import { useHistory } from 'react-router-dom';
+export default function Navbar({ user_name }) {
+  const history = useHistory();
+  const logoutUser = () => {
+    localStorage.removeItem("user_token");
+    history.replace('/login')
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -25,7 +30,7 @@ export default function Navbar({user_name}) {
             File Management System
           </Typography>
           <Typography>Hey  👋 { user_name }</Typography>
-          <Button color="inherit">Logout</Button>
+          <Button color="inherit" onClick={logoutUser}>Logout</Button>
         </Toolbar>
       </AppBar>
     </Box>

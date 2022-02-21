@@ -1,12 +1,16 @@
 import { Route, Switch , Redirect } from 'react-router-dom';
 import Home from './Home';
 import Signup from './Signup';
+import Login from './Login';
 export function Routes() {
     return (
         <>
             <Switch>
+                <Route path='/' exact = {true}>
+                    <Login/>
+                </Route>
                 <Route path='/login'>
-                    <Signup/>
+                    <Login/>
                 </Route>
                 <Route path='/signup'>
                     <Signup/>
