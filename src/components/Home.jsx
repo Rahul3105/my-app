@@ -26,7 +26,7 @@ const Home = () => {
   const [newDirectoryName, setNewDirectoryName] = useState("");
   const [currDirForRename, setCurrDirForRename]  = useState("");
   const history = useHistory();
-  // const [openMenu, setOpenMenu] = useState(false);
+  const [forceRender, setForceRender] = useState(false);
 
   useEffect(() => {
     let token = localStorage.getItem("user_token");
@@ -93,6 +93,7 @@ const Home = () => {
   }
   const storeIDInLC = (id,itemType) => {
     localStorage.setItem("copiedItemID",JSON.stringify({ id, parentID : directory._id, itemType }));
+   setForceRender(!forceRender)
   }
 
   console.log(directory)
