@@ -15,7 +15,7 @@ const Signup = () => {
     }
     const postForm = async () => {
         try {
-            let res = await axios.post("http://35.170.203.74/api/signup", form);
+            let res = await axios.post("https://salty-sands-70108.herokuapp.com/api/signup", form);
             if (!res.error) { 
                 ///store token is localStorage
                 localStorage.setItem('user_token', JSON.stringify(res.data.token))
