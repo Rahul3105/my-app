@@ -2,24 +2,24 @@ import { Route, Switch , Redirect } from 'react-router-dom';
 import Home from './Home';
 import Signup from './Signup';
 import Login from './Login';
-export function Routes() {
+export function Routes({handleOpen}) {
     return (
         <>
             <Switch>
                 <Route path='/' exact = {true}>
-                    <Login/>
+                    <Login handleOpen={ handleOpen }/>
                 </Route>
                 <Route path='/login'>
-                    <Login/>
+                    <Login handleOpen={ handleOpen }/>
                 </Route>
                 <Route path='/signup'>
-                    <Signup/>
+                    <Signup handleOpen={ handleOpen }/>
                 </Route>
                 <PrivateRoutes path='/my-drive' exact = {true} redirectPath={'/signup'}>
-                    <Home/>
+                    <Home handleOpen={ handleOpen }/>
                 </PrivateRoutes>
                 <PrivateRoutes path="/my-drive/:id" redirectPath={'/signup'} exact = {true}>
-                    <Home/>
+                    <Home handleOpen={ handleOpen }/>
                 </PrivateRoutes>
                 <Route>
                     <h1>Not found</h1>

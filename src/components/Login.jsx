@@ -6,7 +6,7 @@ import { useHistory ,Link} from "react-router-dom";
 import StyledForm from './StyledForm';
 import apiURL from '../apiURL'
 
-const Login = () =>
+const Login = ({ handleOpen }) =>
 {
     const [form, setForm] = useState({});
     const history = useHistory()
@@ -24,7 +24,10 @@ const Login = () =>
     }
     const postForm = async () => {
         try {
+            handleOpen( true )
             let res = await axios.post(`${apiURL}/login`, form);
+           
+            handleOpen( false )
             if (!res.error) { 
                 ///store token in localStorage
                 localStorage.setItem('user_token', JSON.stringify(res.data.token))
@@ -32,6 +35,7 @@ const Login = () =>
                 return history.replace('/my-drive')
             }
         } catch (err) {
+             handleOpen( false )
             console.log(err.message)
         }
     }

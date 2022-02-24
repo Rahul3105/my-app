@@ -15,10 +15,10 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useDirectory } from '../hooks/useDirectory';
 import PasteItemBtn from './PasteItemBtn';
 import apiURL from '../apiURL';
-const Home = () => {
+const Home = ({handleOpen}) => {
   const { id } = useParams()
   const [userInfo, setUserInfo] = useState();
-  const { state: directory, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory,renameFile , moveDir, moveFile, directoryOrganize, copyDirectory , copyFile} = useDirectory(id)
+  const { state: directory, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory,renameFile , moveDir, moveFile, directoryOrganize, copyDirectory , copyFile} = useDirectory(id, handleOpen)
   const [modelOpen, setModelOpen] = useState(false);
   const [openModelForRenameDir, setOpenModelForRenameDir] = useState(false);
   const [openModelForRenameFile, setOpenModelForRenameFile] = useState(false);
@@ -29,12 +29,16 @@ const Home = () => {
 
   useEffect(() => {
     let token = localStorage.getItem("user_token");
+    handleOpen(true)
     axios
       .get(`${apiURL}/users`, { headers: { "authentication": `bearer ${token}` } })
-      .then((res) => {
+      .then((res) =>
+      {
+        handleOpen(false)
         setUserInfo(res.data.user);
       })
       .catch((err) => {
+        handleOpen(false)
         console.log(err.message);
       });
   }, []);
