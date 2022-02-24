@@ -74,6 +74,9 @@ const useDirectory = (dir_id = null, handleOpen) => {
       setState(res.data.directory)
     } catch (err) {
       handleOpen(false)
+      if (err.message === "Request failed with status code 405") {
+        alert(" Directory is not empty😓")
+      }
       console.log(err.message)
     }
   }
