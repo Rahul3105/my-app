@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useHistory ,Link} from "react-router-dom"; 
 import StyledForm from './StyledForm';
+import apiURL from '../apiURL'
 
 const Login = () =>
 {
@@ -23,7 +24,7 @@ const Login = () =>
     }
     const postForm = async () => {
         try {
-            let res = await axios.post("https://salty-sands-70108.herokuapp.com/api/login", form);
+            let res = await axios.post(`${apiURL}/login`, form);
             if (!res.error) { 
                 ///store token in localStorage
                 localStorage.setItem('user_token', JSON.stringify(res.data.token))

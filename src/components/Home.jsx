@@ -1,5 +1,5 @@
 import Navbar from "./navbar";
-import { Button, Menu, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
 import styled from "styled-components"
 import { useEffect, useState } from "react";
 import ArticleIcon from '@mui/icons-material/Article';
@@ -9,17 +9,16 @@ import Model from './Model';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDirectory } from '../hooks/useDirectory';
 import PasteItemBtn from './PasteItemBtn';
-const api_url = "https://salty-sands-70108.herokuapp.com/api"
-
+import apiURL from '../apiURL';
 const Home = () => {
   const { id } = useParams()
   const [userInfo, setUserInfo] = useState();
-  const { state: directory, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory,renameFile , moveDir, moveFile, directoryOrganize } = useDirectory(id)
+  const { state: directory, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory,renameFile , moveDir, moveFile, directoryOrganize, copyDirectory , copyFile} = useDirectory(id)
   const [modelOpen, setModelOpen] = useState(false);
   const [openModelForRenameDir, setOpenModelForRenameDir] = useState(false);
   const [openModelForRenameFile, setOpenModelForRenameFile] = useState(false);
@@ -31,7 +30,7 @@ const Home = () => {
   useEffect(() => {
     let token = localStorage.getItem("user_token");
     axios
-      .get(`${api_url}/users`, { headers: { "authentication": `bearer ${token}` } })
+      .get(`${apiURL}/users`, { headers: { "authentication": `bearer ${token}` } })
       .then((res) => {
         setUserInfo(res.data.user);
       })
@@ -83,26 +82,32 @@ const Home = () => {
     setNewDirectoryName("");
   }
   const moveHelper = async (callback) => {
-    let {id, parentID, itemType} = JSON.parse(localStorage.getItem("copiedItemID"))
+    let { id, parentID, itemType, operation } = JSON.parse(localStorage.getItem("copiedItemID"))
     localStorage.removeItem("copiedItemID");
+    if (operation === "copy") {
+      await itemType === 'dir' ? copyDirectoryHelper(id) : copyFileHelper(id) 
+      return
+    }
     let payload = { 
       newParentID: directory._id,
       prevParentID: parentID
     }
     await itemType === 'dir' ? moveDir(id, payload) : moveFile(id, payload)
   }
-  const storeIDInLC = (id,itemType) => {
-    localStorage.setItem("copiedItemID",JSON.stringify({ id, parentID : directory._id, itemType }));
+  const storeIDInLC = (value) => {
+    localStorage.setItem("copiedItemID", JSON.stringify(value));
    setForceRender(!forceRender)
   }
 
   console.log(directory)
-  const toggleModel = () => setModelOpen(!modelOpen)
-  // const toggleMenu = (e) => {
-  //   e.stopPropagation()
-  //   setOpenMenu(!openMenu)
-  // }
-  
+  const toggleModel = () => setModelOpen(!modelOpen);
+
+  const copyDirectoryHelper =async  (id) => {
+    await copyDirectory(id, { newParentID: directory._id })
+  }
+  const copyFileHelper = async (id) => {
+    await copyFile (id, { newParentID: directory._id })
+  }
   return (
     <StyledHome>
       {modelOpen && <Model toggleModel={toggleModel} updateDirName={updateDirName} addDir={addDir} />}
@@ -132,8 +137,8 @@ const Home = () => {
             <Button variant="outlined" onClick={() => openDir(dir._id)}><FolderIcon />{dir.directory_name} </Button>
             <div>
               <DeleteIcon onClick={() => deleteDir(dir._id)} />
-              <ContentCutIcon onClick={ ( ) => storeIDInLC(dir._id, "dir")}/>
-              <ContentCopyIcon />
+              <ContentCutIcon onClick={ ( ) => storeIDInLC({ id: dir._id, parentID : directory._id, itemType: "dir" , operation: "move"})}/>
+              <ContentCopyIcon onClick={ ( ) => storeIDInLC({ id: dir._id, operation:"copy", itemType: "dir"})}/>
               <DriveFileRenameOutlineIcon onClick={() =>{
                 setCurrDirForRename(dir._id)                
                 setOpenModelForRenameDir(!openModelForRenameDir)}} />
@@ -146,8 +151,8 @@ const Home = () => {
             <Button variant="outlined" key={file._id} ><ArticleIcon/>{file.file_name}  </Button>
             <div>
               <DeleteIcon onClick={() => deleteFile(file._id)} />
-              <ContentCutIcon onClick={ ( ) => storeIDInLC(file._id, "file")}/>
-              <ContentCopyIcon />
+              <ContentCutIcon onClick={ ( ) => storeIDInLC( { id: file._id, parentID : directory._id, itemType: "file", operation: "move"})}/>
+              <ContentCopyIcon onClick={ ( ) => storeIDInLC({ id: file._id, operation:"copy", itemType: "file"})}/>
               <DriveFileRenameOutlineIcon onClick={() =>{
                 setCurrDirForRename(file._id)                
                 setOpenModelForRenameFile(!openModelForRenameFile)
@@ -157,11 +162,7 @@ const Home = () => {
           </div>
         })}
       </div>
-      {/* <Menu open ={openMenu}>
-        <MenuItem>Cut</MenuItem>
-        <MenuItem>Delete</MenuItem>
-        <MenuItem>Rename</MenuItem>
-      </Menu> */}
+      
     </StyledHome>
   );
 };

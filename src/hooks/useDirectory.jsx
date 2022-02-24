@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-const api_url = "https://salty-sands-70108.herokuapp.com/api"
+import apiURL from '../apiURL';
+
 
 
 const useDirectory = (dir_id = null) => {
@@ -16,7 +17,7 @@ const useDirectory = (dir_id = null) => {
     if (dirID) {
       let token = localStorage.getItem("user_token");
       axios
-        .get(`${api_url}/my-directory/${dirID}`, {
+        .get(`${apiURL}/my-directory/directory/${dirID}`, {
           headers: { authentication: `bearer ${token}` },
         })
         .then((res) => {
@@ -32,7 +33,7 @@ const useDirectory = (dir_id = null) => {
     try {
       let token = localStorage.getItem("user_token");
       let res = await axios.patch(
-        `${api_url}/my-directory/directory/create/${id}`,
+        `${apiURL}/my-directory/directory/create/${id}`,
         payload, {
         headers: { authentication: `bearer ${token}` },
       }
@@ -45,7 +46,7 @@ const useDirectory = (dir_id = null) => {
   const addFile = async (id, payload) => {
     try {
       let token = localStorage.getItem("user_token");
-      let res = await axios.patch(`${api_url}/my-directory/file/create/${id}`, payload, {
+      let res = await axios.patch(`${apiURL}/my-directory/file/create/${id}`, payload, {
         headers: { authentication: `bearer ${token}` },
       });
       setState(res.data.directory)
@@ -57,7 +58,7 @@ const useDirectory = (dir_id = null) => {
     try {
       let token = localStorage.getItem("user_token");
 
-      let res = await axios.delete(`${api_url}/my-directory/directory/${id}`, {
+      let res = await axios.delete(`${apiURL}/my-directory/directory/${id}`, {
         headers: { authentication: `bearer ${token}` },
       });
       setState(res.data.directory)
@@ -69,7 +70,7 @@ const useDirectory = (dir_id = null) => {
     try {
       let token = localStorage.getItem("user_token");
 
-      let res = await axios.delete(`${api_url}/my-directory/file/${id}`, { data: { parent }, headers: { authentication: `bearer ${token}` } })
+      let res = await axios.delete(`${apiURL}/my-directory/file/${id}`, { data: { parent }, headers: { authentication: `bearer ${token}` } })
 
       setState(res.data.directory)
     } catch (err) {
@@ -81,7 +82,7 @@ const useDirectory = (dir_id = null) => {
     try {
             let token = localStorage.getItem("user_token");
 
-      let res = await axios.patch(`${api_url}/my-directory/directory/rename/${id}`, payload, {
+      let res = await axios.patch(`${apiURL}/my-directory/directory/rename/${id}`, payload, {
         headers: { authentication: `bearer ${token}` },
       });
       
@@ -94,9 +95,9 @@ const useDirectory = (dir_id = null) => {
 
   const renameFile = async (id, payload) => {
     try {
-                  let token = localStorage.getItem("user_token");
+      let token = localStorage.getItem("user_token");
 
-      let res = await axios.patch(`${api_url}/my-directory/file/rename/${id}`, payload,  {
+      let res = await axios.patch(`${apiURL}/my-directory/file/rename/${id}`, payload,  {
         headers: { authentication: `bearer ${token}` },
       });
       setState(res.data.directory)
@@ -108,7 +109,7 @@ const useDirectory = (dir_id = null) => {
     try {
       let token = localStorage.getItem("user_token");
 
-      let res = await axios.patch(`${api_url}/my-directory/directory/move/${id}`, payload, {
+      let res = await axios.patch(`${apiURL}/my-directory/directory/move/${id}`, payload, {
         headers: { authentication: `bearer ${token}` },
       });
       
@@ -121,7 +122,7 @@ const useDirectory = (dir_id = null) => {
   const moveFile = async (id, payload) => {
     try {
       let token = localStorage.getItem("user_token");
-      let res = await axios.patch(`${api_url}/my-directory/file/move/${id}`, payload, {
+      let res = await axios.patch(`${apiURL}/my-directory/file/move/${id}`, payload, {
         headers: { authentication: `bearer ${token}` },
       });
       setState(res.data.directory)
@@ -135,7 +136,7 @@ const useDirectory = (dir_id = null) => {
     try {
       let token = localStorage.getItem("user_token");
 
-      let res = await axios.patch(`${api_url}/my-directory/directory/organize/${id}`, null, {
+      let res = await axios.patch(`${apiURL}/my-directory/directory/organize/${id}`, null, {
         headers: { authentication: `bearer ${token}` },
       });
       setState(res.data.directory);
@@ -143,6 +144,28 @@ const useDirectory = (dir_id = null) => {
       console.log(err.message)
     }
   }
-  return { state, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory, renameFile, moveDir, moveFile, directoryOrganize , error, setError};
+  const copyDirectory = async (id, payload) => {
+    try {
+      let token = localStorage.getItem("user_token");
+      let res = await axios.patch(`${apiURL}/my-directory/directory/copy/${id}`, payload, {
+        headers: { authentication: `bearer ${token}` },
+      })
+      setState(res.data.directory);
+    } catch (err) {
+      console.log(err.message)
+    }   
+  }
+  const copyFile = async (id, payload) => {
+    try {
+      let token = localStorage.getItem("user_token");
+       let res = await axios.patch(`${apiURL}/my-directory/file/copy/${id}`, payload, {
+        headers: { authentication: `bearer ${token}` },
+       })
+      setState(res.data.directory)
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+  return { state, addSubDirectory, setDirID, addFile, removeSubDirectory, removeFile, renameSubDirectory, renameFile, moveDir, moveFile, directoryOrganize , error, setError, copyDirectory, copyFile};
 };
 export { useDirectory };
