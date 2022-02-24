@@ -43,7 +43,7 @@ const Login = () =>
         <div>    
         <TextField label="Password" variant="outlined" onChange={updateForm} name="password" />
         </div>
-        <Button variant="outlined" onClick={postForm}>Login</Button>
+        <Button variant="outlined" onClick={postForm}>Log in</Button>
         <p>Create an account<Link to={"/signup"}>Signup</Link></p>
     </StyledForm>
 }
